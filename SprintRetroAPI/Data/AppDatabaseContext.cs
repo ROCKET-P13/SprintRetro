@@ -1,0 +1,77 @@
+using Microsoft.EntityFrameworkCore;
+using SprintRetroAPI.Entities;
+
+namespace SprintRetroAPI.Data;
+
+public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : DbContext(options)
+{
+	public DbSet<Room> Rooms { get; set; }
+	public DbSet<Participant> Participants { get; set; }
+	public DbSet<Comment> Comments { get; set; }
+	public DbSet<Column> Columns { get; set; }
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.Entity<Room>(room =>
+		{
+			room.ToTable("Rooms");
+			room.Property(room => room.Id).HasColumnName("id");
+			room.Property(room => room.Code).HasColumnName("code");
+			room.Property(room => room.CreatedAt).HasColumnName("created_at");
+
+			room.HasKey(room => room.Id);
+			room.HasIndex(room => room.Code).IsUnique();
+			room.Property(room => room.Code).HasMaxLength(10).IsRequired();
+
+			room.HasMany(room => room.Participants)
+				.WithOne()
+				.HasForeignKey(participant => participant.RoomId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			room.HasMany(room => room.Columns)
+				.WithOne()
+				.HasForeignKey(column => column.RoomId)
+				.OnDelete(DeleteBehavior.Cascade);
+		});
+
+		modelBuilder.Entity<Participant>(participant =>
+		{
+			participant.ToTable("Participants");
+			participant.Property(participant => participant.Id).HasColumnName("id");
+			participant.Property(participant => participant.RoomId).HasColumnName("room_id");
+			participant.Property(participant => participant.ConnectionId).HasColumnName("connection_id");
+			participant.Property(participant => participant.Name).HasColumnName("name");
+
+			participant.HasKey(participant => participant.Id);
+			participant.HasIndex(participant => participant.ConnectionId).IsUnique();
+			participant.Property(participant => participant.ConnectionId).HasMaxLength(128).IsRequired();
+			participant.Property(participant => participant.Name).HasMaxLength(100).IsRequired();
+		});
+
+		modelBuilder.Entity<Comment>(comment =>
+		{
+			comment.ToTable("Comments");
+			comment.Property(comment => comment.Id).HasColumnName("id");
+			comment.Property(comment => comment.RoomId).HasColumnName("room_id");
+			comment.Property(comment => comment.ColumnId).HasColumnName("column_id");
+			comment.Property(comment => comment.ParticipantId).HasColumnName("participant_id");
+			comment.Property(comment => comment.Body).HasColumnName("body");
+
+			comment.HasKey(comment => comment.Id);
+			comment.HasIndex(comment => comment.RoomId);
+		});
+
+		
+		modelBuilder.Entity<Column>(column =>
+		{
+			column.ToTable("Comments");
+			column.Property(column => column.Id).HasColumnName("id");
+			column.Property(column => column.RoomId).HasColumnName("room_id");
+			column.Property(column => column.Name).HasColumnName("name");
+			column.Property(column => column.SortOrder).HasColumnName("sort_order");
+
+			column.HasKey(column => column.Id);
+			column.HasIndex(column => column.RoomId);
+		});
+	}
+}
