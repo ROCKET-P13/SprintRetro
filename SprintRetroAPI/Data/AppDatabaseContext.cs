@@ -57,6 +57,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			comment.Property(comment => comment.ColumnId).HasColumnName("column_id");
 			comment.Property(comment => comment.ParticipantId).HasColumnName("participant_id");
 			comment.Property(comment => comment.Body).HasColumnName("body");
+			comment.Property(comment => comment.CreatedAt).HasColumnName("created_at");
 
 			comment.HasKey(comment => comment.Id);
 			comment.HasIndex(comment => comment.RoomId);
