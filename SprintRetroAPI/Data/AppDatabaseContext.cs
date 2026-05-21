@@ -24,7 +24,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			room.Property(room => room.Code).HasMaxLength(10).IsRequired();
 
 			room.HasMany(room => room.Participants)
-				.WithOne()
+				.WithOne(participant => participant.Room)
 				.HasForeignKey(participant => participant.RoomId)
 				.OnDelete(DeleteBehavior.Cascade);
 
@@ -42,6 +42,10 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			participant.Property(participant => participant.ConnectionId).HasColumnName("connection_id");
 			participant.Property(participant => participant.Name).HasColumnName("name");
 
+			participant.HasMany(participant => participant.Comments)
+				.WithOne(comment => comment.Participant)
+				.HasForeignKey(comment => comment.ParticipantId);
+		
 			participant.HasKey(participant => participant.Id);
 			participant.HasIndex(participant => participant.ConnectionId).IsUnique();
 			participant.Property(participant => participant.ConnectionId).HasMaxLength(128).IsRequired();
@@ -67,8 +71,12 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			column.ToTable("Comments");
 			column.Property(column => column.Id).HasColumnName("id");
 			column.Property(column => column.RoomId).HasColumnName("room_id");
-			column.Property(column => column.Name).HasColumnName("name");
-			column.Property(column => column.SortOrder).HasColumnName("sort_order");
+			column.Property(column => column.Title).HasColumnName("title");
+			column.Property(column => column.Position).HasColumnName("position");
+
+			column.HasMany(column => column.Comments)
+				.WithOne(comment => comment.Column)
+				.HasForeignKey(comment => comment.ColumnId);
 
 			column.HasKey(column => column.Id);
 			column.HasIndex(column => column.RoomId);
