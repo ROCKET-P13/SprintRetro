@@ -16,6 +16,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 		{
 			room.ToTable("Rooms");
 			room.Property(room => room.Id).HasColumnName("id");
+			room.Property(room => room.Name).HasColumnName("name");
 			room.Property(room => room.CreatedAt).HasColumnName("created_at");
 
 			room.HasKey(room => room.Id);
@@ -25,7 +26,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 				.OnDelete(DeleteBehavior.Cascade);
 
 			room.HasMany(room => room.Columns)
-				.WithOne()
+				.WithOne(column => column.Room)
 				.HasForeignKey(column => column.RoomId)
 				.OnDelete(DeleteBehavior.Cascade);
 		});
