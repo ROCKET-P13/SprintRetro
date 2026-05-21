@@ -16,13 +16,9 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 		{
 			room.ToTable("Rooms");
 			room.Property(room => room.Id).HasColumnName("id");
-			room.Property(room => room.Code).HasColumnName("code");
 			room.Property(room => room.CreatedAt).HasColumnName("created_at");
 
 			room.HasKey(room => room.Id);
-			room.HasIndex(room => room.Code).IsUnique();
-			room.Property(room => room.Code).HasMaxLength(10).IsRequired();
-
 			room.HasMany(room => room.Participants)
 				.WithOne(participant => participant.Room)
 				.HasForeignKey(participant => participant.RoomId)
