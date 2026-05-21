@@ -17,6 +17,7 @@ public class RoomRepository(AppDatabaseContext databaseContext) : IRoomRepositor
 			.Where(room => room.Id == id)
 			.Include(room => room.Participants)
 			.Include(room => room.Columns)
+				.ThenInclude(column => column.Comments)
 			.FirstOrDefaultAsync();
 	}
 
@@ -44,6 +45,14 @@ public class RoomRepository(AppDatabaseContext databaseContext) : IRoomRepositor
 			if (_databaseContext.Entry(column).State == EntityState.Modified)
 			{
 				_databaseContext.Columns.Add(column);
+			}
+
+			foreach (var comment in column.Comments)
+			{
+				if (_databaseContext.Entry(comment).State == EntityState.Modified)
+				{
+					_databaseContext.Comments.Add(comment);
+				}
 			}
 		}
 	}
