@@ -6,8 +6,8 @@ public sealed class UnitOfWork(AppDatabaseContext databaseContext) : IUnitOfWork
 {
 	private readonly AppDatabaseContext _databaseContext = databaseContext;
 
-	public async Task SaveChanges(CancellationToken cancellationToken)
+	public async Task SaveChanges()
 	{
-		await _databaseContext.SaveChangesAsync(cancellationToken);
+		await _databaseContext.SaveChangesAsync();
 	}
 }
