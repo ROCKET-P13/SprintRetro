@@ -66,7 +66,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 		
 		modelBuilder.Entity<Column>(column =>
 		{
-			column.ToTable("Comments");
+			column.ToTable("Columns");
 			column.Property(column => column.Id).HasColumnName("id");
 			column.Property(column => column.RoomId).HasColumnName("room_id");
 			column.Property(column => column.Title).HasColumnName("title");

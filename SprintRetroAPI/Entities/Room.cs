@@ -17,22 +17,14 @@ public class Room
 		Participants.Add(participant);
 	}
 
-	public void AddColumn(CreateColumnRequest dto)
+	public void AddColumn(Column column)
 	{
-		if (Columns.FirstOrDefault(column => column.Position == dto.Position) is not null)
+		if (Columns.FirstOrDefault(c => c.Position == column.Position) is not null)
 		{
 			throw new InvalidOperationException("A column already exists at provided position");
 		}
 		
-		Columns.Add(
-			new Column
-			{
-				Id = Guid.NewGuid(),
-				RoomId = Id,
-				Title = dto.Title,
-				Position = dto.Position,
-			}
-		);
+		Columns.Add(column);
 	}
 
 	public void AddComment(CreateCommentRequest dto)

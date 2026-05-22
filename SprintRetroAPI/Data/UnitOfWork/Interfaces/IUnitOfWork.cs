@@ -2,5 +2,7 @@ namespace SprintRetroAPI.Data.UnitOfWork.Interfaces;
 
 public interface IUnitOfWork
 {
-    Task SaveChanges();
+	AppDatabaseContext DbContext { get; }
+
+	Task SaveChanges();
 }

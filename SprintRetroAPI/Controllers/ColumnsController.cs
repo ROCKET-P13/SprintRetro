@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SprintRetroAPI.Data.UnitOfWork.Interfaces;
 using SprintRetroAPI.DTOs;
+using SprintRetroAPI.Entities;
 using SprintRetroAPI.Factories.RoomViewModelFactory.DTOs;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
@@ -28,8 +29,28 @@ public class CoulumnsController(
 			return NotFound("Room not found");
 		}
 
-		room.AddColumn(request);
+		room.AddColumn(
+			new Column
+			{
+				Id = Guid.NewGuid(),
+				RoomId = room.Id,
+				Title = request.Title,
+				Position = request.Position,
+			}
+		);
+		
+		var columns = _unitOfWork.DbContext.ChangeTracker.Entries<Column>()
+			.Select(x => new
+			{
+				x.Entity.Id,
+				x.State,
+				x.DebugView
+			});
 
+		foreach (var c in columns)
+		{
+			Console.WriteLine($"Column {c.Id} => {c.State}");
+		}
 		await _unitOfWork.SaveChanges();
 
 		return Ok(_roomViewModelFactory.FromRoom(room));
