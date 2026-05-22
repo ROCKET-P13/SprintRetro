@@ -8,19 +8,19 @@ using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 namespace SprintRetroAPI.Controllers;
 
 [ApiController]
-[Route("comments")]
-public class CommentsController(
+[Route("columns")]
+public class CoulumnsController(
 	IUnitOfWork unitOfWork,
 	IRoomRepository roomRepository,
 	IRoomViewModelFactory roomViewModelFactory
-): ControllerBase
+) : ControllerBase
 {
 	private readonly IUnitOfWork _unitOfWork = unitOfWork;
 	private readonly IRoomRepository _roomRepository = roomRepository;
 	private readonly IRoomViewModelFactory _roomViewModelFactory = roomViewModelFactory;
 
 	[HttpPost]
-	public async Task<ActionResult<RoomViewModel>> Create([FromBody] CreateCommentRequest request)
+	public async Task<ActionResult<RoomViewModel>> Create([FromBody] CreateColumnRequest request)
 	{
 		var room = await _roomRepository.FindById(request.RoomId);
 		if (room is null)
@@ -28,11 +28,10 @@ public class CommentsController(
 			return NotFound("Room not found");
 		}
 
-		room.AddComment(request);
+		room.AddColumn(request);
 
 		await _unitOfWork.SaveChanges();
 
 		return Ok(_roomViewModelFactory.FromRoom(room));
-		
 	}
 }

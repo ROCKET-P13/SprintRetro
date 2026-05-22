@@ -17,9 +17,22 @@ public class Room
 		Participants.Add(participant);
 	}
 
-	public void AddColumn(Column column)
+	public void AddColumn(CreateColumnRequest dto)
 	{
-		Columns.Add(column);
+		if (Columns.FirstOrDefault(column => column.Position == dto.Position) is not null)
+		{
+			throw new InvalidOperationException("A column already exists at provided position");
+		}
+		
+		Columns.Add(
+			new Column
+			{
+				Id = Guid.NewGuid(),
+				RoomId = Id,
+				Title = dto.Title,
+				Position = dto.Position,
+			}
+		);
 	}
 
 	public void AddComment(CreateCommentRequest dto)
@@ -30,7 +43,7 @@ public class Room
 			throw new InvalidOperationException("Column does not exist in room");
 		}
 
-		column.Comments.Add(
+		column.AddComment(
 			new Comment
 			{
 				Id = Guid.NewGuid(),
