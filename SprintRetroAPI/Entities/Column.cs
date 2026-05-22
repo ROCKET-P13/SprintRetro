@@ -7,5 +7,10 @@ public class Column
 	public Room Room { get; set; } = null!;
 	public required string Title { get; set; }
 	public int Position { get; set; }
-	public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+	public ICollection<Comment> Comments { get; private set; } = new List<Comment>();
+	
+	public void AddComment(Comment comment)
+	{
+		Comments.Add(comment);
+	}
 }

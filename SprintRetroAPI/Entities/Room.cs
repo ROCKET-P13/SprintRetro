@@ -1,4 +1,6 @@
 
+using SprintRetroAPI.DTOs;
+
 namespace SprintRetroAPI.Entities;
 
 public class Room
@@ -18,5 +20,27 @@ public class Room
 	public void AddColumn(Column column)
 	{
 		Columns.Add(column);
+	}
+
+	public void AddComment(CreateCommentRequest dto)
+	{
+		var column = Columns.FirstOrDefault(column => column.Id == dto.ColumnId);
+		if (column is null)
+		{
+			throw new InvalidOperationException("Column does not exist in room");
+		}
+
+		column.Comments.Add(
+			new Comment
+			{
+				Id = Guid.NewGuid(),
+				RoomId = Id,
+				ColumnId = column.Id,
+				ParticipantId = dto.ParticipantId,
+				Body = dto.Body,
+				VoteCount = 0,
+				CreatedAt = DateTimeOffset.UtcNow
+			}
+		);
 	}
 }

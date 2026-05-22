@@ -24,36 +24,6 @@ public class RoomRepository(AppDatabaseContext databaseContext) : IRoomRepositor
 	public void Upsert(Room room)
 	{
 		ArgumentNullException.ThrowIfNull(room);
-
-		var roomEntity = _databaseContext.Entry(room);
-		if (roomEntity.State == EntityState.Detached)
-		{
-			_databaseContext.Rooms.Add(room);
-			return;
-		}
-
-		foreach (var participant in room.Participants)
-		{
-			if (_databaseContext.Entry(participant).State == EntityState.Modified)
-			{
-				_databaseContext.Participants.Add(participant);
-			}
-		}
-
-		foreach (var column in room.Columns)
-		{
-			if (_databaseContext.Entry(column).State == EntityState.Modified)
-			{
-				_databaseContext.Columns.Add(column);
-			}
-
-			foreach (var comment in column.Comments)
-			{
-				if (_databaseContext.Entry(comment).State == EntityState.Modified)
-				{
-					_databaseContext.Comments.Add(comment);
-				}
-			}
-		}
+		_databaseContext.Rooms.Add(room);
 	}
 }
