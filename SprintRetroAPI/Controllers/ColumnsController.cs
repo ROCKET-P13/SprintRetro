@@ -29,28 +29,8 @@ public class CoulumnsController(
 			return NotFound("Room not found");
 		}
 
-		room.AddColumn(
-			new Column
-			{
-				Id = Guid.NewGuid(),
-				RoomId = room.Id,
-				Title = request.Title,
-				Position = request.Position,
-			}
-		);
-		
-		var columns = _unitOfWork.DbContext.ChangeTracker.Entries<Column>()
-			.Select(x => new
-			{
-				x.Entity.Id,
-				x.State,
-				x.DebugView
-			});
+		room.AddColumn(request.Title, request.Position);
 
-		foreach (var c in columns)
-		{
-			Console.WriteLine($"Column {c.Id} => {c.State}");
-		}
 		await _unitOfWork.SaveChanges();
 
 		return Ok(_roomViewModelFactory.FromRoom(room));

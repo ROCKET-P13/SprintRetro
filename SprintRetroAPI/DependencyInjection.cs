@@ -19,9 +19,16 @@ public static class DependencyInjection
 	{
 		services.AddDbContext<AppDatabaseContext>(options =>
 		{
-			options.UseNpgsql(connectionString);
+			options.UseNpgsql(
+				connectionString,
+				npgsqlOptions =>
+				{
+					npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+				}
+			);
 		});
 
+		services.AddScoped<IRoomRepository, RoomRepository>();
 		services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 		services.AddScoped<IRoomFactory, RoomFactory>();
@@ -29,7 +36,6 @@ public static class DependencyInjection
 
 		services.AddScoped<IRoomFinder, RoomFinder>();
 
-		services.AddScoped<IRoomRepository, RoomRepository>();
 
 		services.AddControllers();
 

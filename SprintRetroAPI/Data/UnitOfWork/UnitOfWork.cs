@@ -9,5 +9,4 @@ public sealed class UnitOfWork(AppDatabaseContext databaseContext) : IUnitOfWork
 	{
 		await _databaseContext.SaveChangesAsync();
 	}
-	public AppDatabaseContext DbContext { get; } = databaseContext;
 }

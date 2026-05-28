@@ -25,7 +25,6 @@ namespace SprintRetroAPI.Migrations
             modelBuilder.Entity("SprintRetroAPI.Entities.Column", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -52,7 +51,6 @@ namespace SprintRetroAPI.Migrations
             modelBuilder.Entity("SprintRetroAPI.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -94,7 +92,6 @@ namespace SprintRetroAPI.Migrations
             modelBuilder.Entity("SprintRetroAPI.Entities.Participant", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -127,7 +124,6 @@ namespace SprintRetroAPI.Migrations
             modelBuilder.Entity("SprintRetroAPI.Entities.Room", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 

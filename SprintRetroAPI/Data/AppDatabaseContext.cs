@@ -20,6 +20,8 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			room.Property(room => room.CreatedAt).HasColumnName("created_at");
 
 			room.HasKey(room => room.Id);
+			room.Property(room => room.Id).ValueGeneratedNever();
+
 			room.HasMany(room => room.Participants)
 				.WithOne(participant => participant.Room)
 				.HasForeignKey(participant => participant.RoomId)
@@ -44,6 +46,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 				.HasForeignKey(comment => comment.ParticipantId);
 		
 			participant.HasKey(participant => participant.Id);
+			participant.Property(participant => participant.Id).ValueGeneratedNever();
 			participant.HasIndex(participant => participant.ConnectionId).IsUnique();
 			participant.Property(participant => participant.ConnectionId).HasMaxLength(128).IsRequired();
 			participant.Property(participant => participant.Name).HasMaxLength(100).IsRequired();
@@ -60,6 +63,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			comment.Property(comment => comment.CreatedAt).HasColumnName("created_at");
 
 			comment.HasKey(comment => comment.Id);
+			comment.Property(comment => comment.Id).ValueGeneratedNever();
 			comment.HasIndex(comment => comment.RoomId);
 		});
 
@@ -77,6 +81,8 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 				.HasForeignKey(comment => comment.ColumnId);
 
 			column.HasKey(column => column.Id);
+			column.Property(column => column.Id).ValueGeneratedNever();
+
 			column.HasIndex(column => column.RoomId);
 		});
 	}
