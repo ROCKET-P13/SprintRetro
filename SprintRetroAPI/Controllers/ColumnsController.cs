@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SprintRetroAPI.Data.UnitOfWork.Interfaces;
 using SprintRetroAPI.DTOs;
-using SprintRetroAPI.Entities;
 using SprintRetroAPI.Factories.RoomViewModelFactory.DTOs;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
@@ -9,7 +8,7 @@ using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 namespace SprintRetroAPI.Controllers;
 
 [ApiController]
-[Route("api/columns")]
+[Route("api/rooms/{roomId:guid}/columns")]
 public class CoulumnsController(
 	IUnitOfWork unitOfWork,
 	IRoomRepository roomRepository,
@@ -21,9 +20,9 @@ public class CoulumnsController(
 	private readonly IRoomViewModelFactory _roomViewModelFactory = roomViewModelFactory;
 
 	[HttpPost]
-	public async Task<ActionResult<RoomViewModel>> Create([FromBody] CreateColumnRequest request)
+	public async Task<ActionResult<RoomViewModel>> Create([FromRoute] Guid roomId, [FromBody] CreateColumnRequest request)
 	{
-		var room = await _roomRepository.FindById(request.RoomId);
+		var room = await _roomRepository.FindById(roomId);
 		if (room is null)
 		{
 			return NotFound("Room not found");
