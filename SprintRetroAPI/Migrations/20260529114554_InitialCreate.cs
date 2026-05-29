@@ -50,7 +50,6 @@ namespace SprintRetroAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     room_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    connection_id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -73,7 +72,6 @@ namespace SprintRetroAPI.Migrations
                     column_id = table.Column<Guid>(type: "uuid", nullable: false),
                     participant_id = table.Column<Guid>(type: "uuid", nullable: false),
                     body = table.Column<string>(type: "text", nullable: false),
-                    VoteCount = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -99,6 +97,32 @@ namespace SprintRetroAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Votes",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    comment_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    participant_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Votes", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Votes_Comments_comment_id",
+                        column: x => x.comment_id,
+                        principalTable: "Comments",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Votes_Participants_participant_id",
+                        column: x => x.participant_id,
+                        principalTable: "Participants",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Columns_room_id",
                 table: "Columns",
@@ -120,20 +144,27 @@ namespace SprintRetroAPI.Migrations
                 column: "room_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Participants_connection_id",
-                table: "Participants",
-                column: "connection_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Participants_room_id",
                 table: "Participants",
                 column: "room_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votes_comment_id",
+                table: "Votes",
+                column: "comment_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votes_participant_id",
+                table: "Votes",
+                column: "participant_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Votes");
+
             migrationBuilder.DropTable(
                 name: "Comments");
 

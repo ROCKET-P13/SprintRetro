@@ -1,3 +1,5 @@
+using SprintRetroAPI.DTOs;
+
 namespace SprintRetroAPI.Entities;
 
 public class Comment
@@ -10,6 +12,36 @@ public class Comment
 	public Guid ParticipantId { get; set; }
 	public Participant Participant { get; set; } = null!;
 	public string Body { get; set; } = string.Empty;
-	public int VoteCount { get; set; }
 	public DateTimeOffset CreatedAt { get; set; }
+	public List<Vote> Votes { get; private set; } = [];
+
+	public void AddVote(VoteCommentRequest dto)
+	{
+		if (Votes.Any(vote => vote.ParticipantId == dto.ParticipantId))
+		{
+			throw new InvalidOperationException("Participant already voted on this comment");
+		}
+
+		Votes.Add(
+			new Vote
+			{
+				Id = Guid.NewGuid(),
+				CommentId = Id,
+				ParticipantId = dto.ParticipantId,
+				CreatedAt = DateTimeOffset.UtcNow,
+			}
+		);
+	}
+
+	public void RemoveVote(VoteCommentRequest dto)
+	{
+		var vote = Votes.FirstOrDefault(vote => vote.ParticipantId == dto.ParticipantId);
+
+		if (vote is null)
+		{
+			return;
+		}
+
+		Votes.Remove(vote);
+	}
 }

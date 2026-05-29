@@ -1,3 +1,5 @@
+using SprintRetroAPI.DTOs;
+
 namespace SprintRetroAPI.Entities;
 
 public class Column
@@ -9,8 +11,18 @@ public class Column
 	public int Position { get; set; }
 	public List<Comment> Comments { get; private set; } = [];
 	
-	public void AddComment(Comment comment)
+	public void AddComment(CreateCommentRequest dto)
 	{
-		Comments.Add(comment);
+		Comments.Add(
+		new Comment
+			{
+				Id = Guid.NewGuid(),
+				RoomId = RoomId,
+				ColumnId = Id,
+				ParticipantId = dto.ParticipantId,
+				Body = dto.Body,
+				CreatedAt = DateTimeOffset.UtcNow
+			}
+		);
 	}
 }

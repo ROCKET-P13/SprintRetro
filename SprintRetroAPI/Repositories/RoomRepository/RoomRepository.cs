@@ -18,6 +18,7 @@ public class RoomRepository(AppDatabaseContext databaseContext) : IRoomRepositor
 			.Include(room => room.Participants)
 			.Include(room => room.Columns)
 				.ThenInclude(column => column.Comments)
+				.ThenInclude(comment => comment.Votes)
 			.FirstOrDefaultAsync();
 	}
 

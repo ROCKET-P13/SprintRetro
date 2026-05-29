@@ -13,10 +13,13 @@ public class RoomFinder(AppDatabaseContext databaseContext) : IRoomFinder
 	{
 		return await _databaseContext.Rooms
 			.AsNoTracking()
+			.AsSplitQuery()
 			.Where(room => room.Id == id)
 			.Include(room => room.Participants)
 			.Include(room => room.Columns)
 				.ThenInclude(column => column.Comments)
+					.ThenInclude(comment => comment.Votes)
+						.ThenInclude(vote => vote.Participant)
 			.FirstOrDefaultAsync();
 	}
 }

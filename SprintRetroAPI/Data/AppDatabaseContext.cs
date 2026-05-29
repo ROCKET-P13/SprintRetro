@@ -7,8 +7,9 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 {
 	public DbSet<Room> Rooms { get; set; }
 	public DbSet<Participant> Participants { get; set; }
-	public DbSet<Comment> Comments { get; set; }
 	public DbSet<Column> Columns { get; set; }
+	public DbSet<Comment> Comments { get; set; }
+	public DbSet<Vote> Votes { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -38,7 +39,6 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			participant.ToTable("Participants");
 			participant.Property(participant => participant.Id).HasColumnName("id");
 			participant.Property(participant => participant.RoomId).HasColumnName("room_id");
-			participant.Property(participant => participant.ConnectionId).HasColumnName("connection_id");
 			participant.Property(participant => participant.Name).HasColumnName("name");
 
 			participant.HasMany(participant => participant.Comments)
@@ -47,26 +47,8 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 		
 			participant.HasKey(participant => participant.Id);
 			participant.Property(participant => participant.Id).ValueGeneratedNever();
-			participant.HasIndex(participant => participant.ConnectionId).IsUnique();
-			participant.Property(participant => participant.ConnectionId).HasMaxLength(128).IsRequired();
 			participant.Property(participant => participant.Name).HasMaxLength(100).IsRequired();
 		});
-
-		modelBuilder.Entity<Comment>(comment =>
-		{
-			comment.ToTable("Comments");
-			comment.Property(comment => comment.Id).HasColumnName("id");
-			comment.Property(comment => comment.RoomId).HasColumnName("room_id");
-			comment.Property(comment => comment.ColumnId).HasColumnName("column_id");
-			comment.Property(comment => comment.ParticipantId).HasColumnName("participant_id");
-			comment.Property(comment => comment.Body).HasColumnName("body");
-			comment.Property(comment => comment.CreatedAt).HasColumnName("created_at");
-
-			comment.HasKey(comment => comment.Id);
-			comment.Property(comment => comment.Id).ValueGeneratedNever();
-			comment.HasIndex(comment => comment.RoomId);
-		});
-
 		
 		modelBuilder.Entity<Column>(column =>
 		{
@@ -84,6 +66,43 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			column.Property(column => column.Id).ValueGeneratedNever();
 
 			column.HasIndex(column => column.RoomId);
+		});
+
+		modelBuilder.Entity<Comment>(comment =>
+		{
+			comment.ToTable("Comments");
+			comment.Property(comment => comment.Id).HasColumnName("id");
+			comment.Property(comment => comment.RoomId).HasColumnName("room_id");
+			comment.Property(comment => comment.ColumnId).HasColumnName("column_id");
+			comment.Property(comment => comment.ParticipantId).HasColumnName("participant_id");
+			comment.Property(comment => comment.Body).HasColumnName("body");
+			comment.Property(comment => comment.CreatedAt).HasColumnName("created_at");
+
+			comment.HasMany(comment => comment.Votes)
+				.WithOne(vote => vote.Comment)
+				.HasForeignKey(vote => vote.CommentId);
+
+			comment.HasKey(comment => comment.Id);
+			comment.Property(comment => comment.Id).ValueGeneratedNever();
+			comment.HasIndex(comment => comment.RoomId);
+		});
+
+		modelBuilder.Entity<Vote>(vote =>
+		{
+			vote.ToTable("Votes");
+			vote.Property(vote => vote.Id).HasColumnName("id");
+			vote.Property(vote => vote.CommentId).HasColumnName("comment_id");
+			vote.Property(vote => vote.ParticipantId).HasColumnName("participant_id");
+			vote.Property(vote => vote.CreatedAt).HasColumnName("created_at");
+
+			vote.HasKey(vote => vote.Id);
+			vote.Property(vote => vote.Id).ValueGeneratedNever();
+
+			vote.HasOne(vote => vote.Participant)
+				.WithMany(participant => participant.Votes)
+				.HasForeignKey(vote => vote.ParticipantId);
+
+			vote.HasIndex(vote => vote.CommentId);
 		});
 	}
 }

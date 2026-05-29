@@ -24,22 +24,36 @@ public class Room
 		);
 	}
 
-	public void AddColumn(string title, int position)
+	public void AddColumn(string title, int? position = null)
 	{
-		if (Columns.FirstOrDefault(c => c.Position == position) is not null)
+		var columnPosition = position ?? GetNextAvailableColumnPosition();
+
+		if (Columns.Any(column => column.Position == columnPosition))
 		{
 			throw new InvalidOperationException("A column already exists at provided position");
 		}
-		
+
 		Columns.Add(
 			new Column
 			{
 				Id = Guid.NewGuid(),
 				RoomId = Id,
 				Title = title,
-				Position = position,
+				Position = columnPosition,
 			}
 		);
+	}
+
+	private int GetNextAvailableColumnPosition()
+	{
+		var position = 1;
+
+		while (Columns.Any(column => column.Position == position))
+		{
+			position++;
+		}
+
+		return position;
 	}
 
 	public void AddComment(CreateCommentRequest dto)
@@ -50,17 +64,32 @@ public class Room
 			throw new InvalidOperationException("Column does not exist in room");
 		}
 
-		column.AddComment(
-			new Comment
-			{
-				Id = Guid.NewGuid(),
-				RoomId = Id,
-				ColumnId = column.Id,
-				ParticipantId = dto.ParticipantId,
-				Body = dto.Body,
-				VoteCount = 0,
-				CreatedAt = DateTimeOffset.UtcNow
-			}
-		);
+		column.AddComment(dto);
+	}
+
+	public void AddVote(VoteCommentRequest dto)
+	{
+		var comment = Columns.SelectMany(column => column.Comments)
+			.FirstOrDefault(comment => comment.Id == dto.CommentId); 
+
+		if (comment is null)
+		{
+			throw new InvalidOperationException("Comment does not exist in room");
+		}
+
+		comment.AddVote(dto);
+	}
+
+	public void RemoveVote(VoteCommentRequest dto)
+	{
+		var comment = Columns.SelectMany(column => column.Comments)
+			.FirstOrDefault(comment => comment.Id == dto.CommentId); 
+
+		if (comment is null)
+		{
+			return;
+		}
+
+		comment.RemoveVote(dto);
 	}
 }

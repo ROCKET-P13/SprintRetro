@@ -75,9 +75,6 @@ namespace SprintRetroAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("room_id");
 
-                    b.Property<int>("VoteCount")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ColumnId");
@@ -95,12 +92,6 @@ namespace SprintRetroAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<string>("ConnectionId")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("connection_id");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -112,9 +103,6 @@ namespace SprintRetroAPI.Migrations
                         .HasColumnName("room_id");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ConnectionId")
-                        .IsUnique();
 
                     b.HasIndex("RoomId");
 
@@ -139,6 +127,33 @@ namespace SprintRetroAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Rooms", (string)null);
+                });
+
+            modelBuilder.Entity("SprintRetroAPI.Entities.Vote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CommentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("comment_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("ParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("participant_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("ParticipantId");
+
+                    b.ToTable("Votes", (string)null);
                 });
 
             modelBuilder.Entity("SprintRetroAPI.Entities.Column", b =>
@@ -190,14 +205,40 @@ namespace SprintRetroAPI.Migrations
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("SprintRetroAPI.Entities.Vote", b =>
+                {
+                    b.HasOne("SprintRetroAPI.Entities.Comment", "Comment")
+                        .WithMany("Votes")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SprintRetroAPI.Entities.Participant", "Participant")
+                        .WithMany("Votes")
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("Participant");
+                });
+
             modelBuilder.Entity("SprintRetroAPI.Entities.Column", b =>
                 {
                     b.Navigation("Comments");
                 });
 
+            modelBuilder.Entity("SprintRetroAPI.Entities.Comment", b =>
+                {
+                    b.Navigation("Votes");
+                });
+
             modelBuilder.Entity("SprintRetroAPI.Entities.Participant", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("SprintRetroAPI.Entities.Room", b =>

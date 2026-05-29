@@ -13,7 +13,9 @@ public class RoomViewModelFactory : IRoomViewModelFactory
 			Id = room.Id,
 			Name = room.Name,
 			Columns = [
-				.. room.Columns.Select(column => new ColumnViewModel
+				.. room.Columns
+				.OrderBy(column => column.Position)
+				.Select(column => new ColumnViewModel
 				{
 					Id = column.Id,
 					Title = column.Title,
@@ -23,8 +25,16 @@ public class RoomViewModelFactory : IRoomViewModelFactory
 						{
 							Id = comment.Id,
 							Body = comment.Body,
-							VoteCount = comment.VoteCount,
-							ParticipantId = comment.ParticipantId
+							VoteCount = comment.Votes.Count,
+							CreatedBy = comment.ParticipantId,
+							Votes = [
+								.. comment.Votes.Select(vote => new VoteViewModel
+								{
+									Id = vote.Id,
+									ParticipantId = vote.ParticipantId, 
+									ParticipantName = vote.Participant.Name,
+								})
+							]
 						})
 					]
 				})
