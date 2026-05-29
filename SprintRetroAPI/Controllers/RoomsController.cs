@@ -11,7 +11,7 @@ using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 namespace SprintRetroAPI.Controllers;
 
 [ApiController]
-[Route("rooms")]
+[Route("api/rooms")]
 public class RoomsController(
 	IUnitOfWork unitOfWork,
 	IRoomFactory roomFactory,

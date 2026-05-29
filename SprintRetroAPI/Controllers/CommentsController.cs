@@ -8,7 +8,7 @@ using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 namespace SprintRetroAPI.Controllers;
 
 [ApiController]
-[Route("comments")]
+[Route("api/comments")]
 public class CommentsController(
 	IUnitOfWork unitOfWork,
 	IRoomRepository roomRepository,

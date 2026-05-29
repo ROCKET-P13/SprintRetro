@@ -9,7 +9,7 @@ using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 namespace SprintRetroAPI.Controllers;
 
 [ApiController]
-[Route("columns")]
+[Route("api/columns")]
 public class CoulumnsController(
 	IUnitOfWork unitOfWork,
 	IRoomRepository roomRepository,
