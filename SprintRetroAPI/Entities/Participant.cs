@@ -6,6 +6,7 @@ public class Participant
 	public Guid RoomId { get; set; }
 	public Room Room { get; set; } = null!;
 	public string Name { get; set; } = string.Empty;
+	public string? ConnectionId { get; set; }
 	public List<Comment> Comments { get; private set; } = [];
 	public List<Vote> Votes { get; private set; } = [];
 	

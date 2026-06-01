@@ -7,6 +7,7 @@ using SprintRetroAPI.Factories.RoomViewModelFactory.DTOs;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
 using SprintRetroAPI.Finders.RoomFinder.Interfaces;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
+using SprintRetroAPI.Services.BroadcastService.Interfaces;
 
 namespace SprintRetroAPI.Controllers;
 
@@ -17,7 +18,8 @@ public class RoomsController(
 	IRoomFactory roomFactory,
 	IRoomRepository roomRepository,
 	IRoomViewModelFactory roomViewModelFactory,
-	IRoomFinder roomFinder
+	IRoomFinder roomFinder,
+	IBroadcastService broadcastService
 ) : ControllerBase
 {
 	private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -25,6 +27,7 @@ public class RoomsController(
 	private readonly IRoomRepository _roomRepository = roomRepository;
 	private readonly IRoomViewModelFactory _roomViewModelFactory = roomViewModelFactory;
 	private readonly IRoomFinder _roomFinder = roomFinder;
+	private readonly IBroadcastService _broadcastService = broadcastService;
 
 	[HttpPost]
 	public async Task<ActionResult<RoomViewModel>> Create([FromBody] CreateRoomRequest request)
@@ -39,6 +42,8 @@ public class RoomsController(
 		_roomRepository.Upsert(room);
 
 		await _unitOfWork.SaveChanges();
+
+		await _broadcastService.RoomUpdated(room);
 
 		return Ok(_roomViewModelFactory.FromRoom(room));
 	}

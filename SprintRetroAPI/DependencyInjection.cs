@@ -10,6 +10,8 @@ using SprintRetroAPI.Finders.RoomFinder;
 using SprintRetroAPI.Finders.RoomFinder.Interfaces;
 using SprintRetroAPI.Repositories.RoomRepository;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
+using SprintRetroAPI.Services.BroadcastService;
+using SprintRetroAPI.Services.BroadcastService.Interfaces;
 
 namespace SprintRetroAPI;
 
@@ -35,6 +37,8 @@ public static class DependencyInjection
 		services.AddScoped<IRoomViewModelFactory, RoomViewModelFactory>();
 
 		services.AddScoped<IRoomFinder, RoomFinder>();
+		
+		services.AddScoped<IBroadcastService, BroadcastService>();
 
 
 		services.AddControllers();

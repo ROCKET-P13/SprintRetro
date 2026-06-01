@@ -92,6 +92,10 @@ namespace SprintRetroAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("ConnectionId")
+                        .HasColumnType("text")
+                        .HasColumnName("connection_id");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
