@@ -12,6 +12,13 @@ using SprintRetroAPI.Repositories.RoomRepository;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 using SprintRetroAPI.Services.BroadcastService;
 using SprintRetroAPI.Services.BroadcastService.Interfaces;
+using SprintRetroAPI.Services.RoomConnectionManager;
+using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
+using SprintRetroAPI.Services.WebSockets;
+using SprintRetroAPI.Services.WebSockets.Handlers;
+using SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager;
+using SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager.Interfaces;
+using SprintRetroAPI.WebSocketPublisher.Interfaces;
 
 namespace SprintRetroAPI;
 
@@ -37,10 +44,16 @@ public static class DependencyInjection
 		services.AddScoped<IRoomViewModelFactory, RoomViewModelFactory>();
 
 		services.AddScoped<IRoomFinder, RoomFinder>();
-		
+		services.AddSingleton<ILocalWebSocketConnectionManager, LocalWebSocketConnectionManager>();
+		services.AddSingleton<IRoomConnectionManager, RoomConnectionManager>();
+		services.AddSingleton<WebSocketMessageRouter>();
+
+		// Application services
 		services.AddScoped<IBroadcastService, BroadcastService>();
+		services.AddScoped<IWebSocketPublisher, WebSocketPublisher.WebSocketPublisher>();
 
-
+		// Handlers
+		services.AddScoped<JoinRoomHandler>();
 		services.AddControllers();
 
 		return services;
