@@ -1,7 +1,7 @@
 using System.Text.Json;
 using SprintRetroAPI.Contracts.ClientMessages;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
-using SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager.Interfaces;
+using SprintRetroAPI.Services.RoomConnectionManager.Parameters;
 
 namespace SprintRetroAPI.Services.WebSockets.Handlers;
 
@@ -18,6 +18,13 @@ public class JoinRoomHandler(IRoomConnectionManager roomConnectionManager)
 			return;
 		}
 
-		await _roomConnectionManager.AddToRoom(message.RoomId.ToString(), connectionId);
+		await _roomConnectionManager.AddToRoom(
+			new AddToRoomParameters
+			{
+				RoomId = message.RoomId.ToString(),
+				ConnectionId = connectionId,
+				ParticipantId = message.ParticipantId.ToString(),
+			}
+		);
 	}
 }

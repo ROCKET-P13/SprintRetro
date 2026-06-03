@@ -2,6 +2,7 @@ using System.Text.Json;
 using SprintRetroAPI.Contracts.ServerMessages;
 using SprintRetroAPI.Entities;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
+using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.BroadcastService.Interfaces;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
 using SprintRetroAPI.WebSocketPublisher.Interfaces;
@@ -23,7 +24,7 @@ public class BroadcastService(
 		var payload = JsonSerializer.Serialize(new RoomUpdatedMessage
 		{
 			Room = _roomViewModelFactory.FromRoom(room)
-		});
+		}, AppJsonSerializerOptions.ApplicationDefault);
 
 		var connectionIds = _roomConnectionManager.GetConnections(room.Id.ToString());
 

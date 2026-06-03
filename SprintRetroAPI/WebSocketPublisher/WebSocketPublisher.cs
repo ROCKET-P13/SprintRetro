@@ -1,4 +1,5 @@
 using System.Text.Json;
+using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager.Interfaces;
 using SprintRetroAPI.WebSocketPublisher.Interfaces;
 
@@ -10,6 +11,6 @@ public class WebSocketPublisher(ILocalWebSocketConnectionManager localWebSocketC
 
 	public async Task PublishToConnection(string connectionId, object payload)
 	{
-		await _localWebSocketConnectionManager.Send(connectionId, JsonSerializer.Serialize(payload));
+		await _localWebSocketConnectionManager.Send(connectionId, JsonSerializer.Serialize(payload, AppJsonSerializerOptions.ApplicationDefault));
 	}
 }

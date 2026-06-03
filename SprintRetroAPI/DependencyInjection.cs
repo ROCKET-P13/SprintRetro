@@ -53,7 +53,7 @@ public static class DependencyInjection
 		services.AddScoped<IWebSocketPublisher, WebSocketPublisher.WebSocketPublisher>();
 
 		// Handlers
-		services.AddScoped<JoinRoomHandler>();
+		services.AddSingleton<JoinRoomHandler>();
 		services.AddControllers();
 
 		return services;

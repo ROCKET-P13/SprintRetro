@@ -40,7 +40,6 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			participant.Property(participant => participant.Id).HasColumnName("id");
 			participant.Property(participant => participant.RoomId).HasColumnName("room_id");
 			participant.Property(participant => participant.Name).HasColumnName("name");
-			participant.Property(participant => participant.ConnectionId).HasColumnName("connection_id");
 
 			participant.HasMany(participant => participant.Comments)
 				.WithOne(comment => comment.Participant)

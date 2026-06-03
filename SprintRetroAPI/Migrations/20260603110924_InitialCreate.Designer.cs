@@ -12,7 +12,7 @@ using SprintRetroAPI.Data;
 namespace SprintRetroAPI.Migrations
 {
     [DbContext(typeof(AppDatabaseContext))]
-    [Migration("20260601124629_InitialCreate")]
+    [Migration("20260603110924_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -94,10 +94,6 @@ namespace SprintRetroAPI.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<string>("ConnectionId")
-                        .HasColumnType("text")
-                        .HasColumnName("connection_id");
 
                     b.Property<string>("Name")
                         .IsRequired()

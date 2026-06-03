@@ -8,94 +8,79 @@ namespace SprintRetroAPI;
 
 public static class LocalEntryPoint
 {
-	public static void Main(string[] args)
-	{
-		var builder = WebApplication.CreateBuilder(args);
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-		builder.Services.AddApplication(
-			builder.Configuration.GetConnectionString("DefaultConnection")
-			?? throw new InvalidOperationException("Missing connection string")
-		);
+        builder.Services.AddApplication(
+            builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Missing connection string")
+        );
 
-		var app = builder.Build();
-		var router = app.Services.GetRequiredService<WebSocketMessageRouter>();
-		app.UseWebSockets();
+        var app = builder.Build();
+        var router = app.Services.GetRequiredService<WebSocketMessageRouter>();
+		var joinRoomHandler = app.Services.GetRequiredService<JoinRoomHandler>();
+		router.Register("JOIN_ROOM", joinRoomHandler.Handle);
+        app.UseWebSockets();
 
-		app.Map("/ws", async context =>
-		{
-			// ---------------------------
-			// Resolve required services
-			// ---------------------------
-			var lifetime = context.RequestServices.GetRequiredService<IHostApplicationLifetime>();
-			var connectionManager = context.RequestServices.GetRequiredService<ILocalWebSocketConnectionManager>();
+        app.Map("/ws", async context =>
+        {
+            var lifetime = context.RequestServices.GetRequiredService<IHostApplicationLifetime>();
+            var connectionManager = context.RequestServices.GetRequiredService<ILocalWebSocketConnectionManager>();
 
-			// ---------------------------
-			// Graceful shutdown token
-			// ---------------------------
-			using var cts = CancellationTokenSource.CreateLinkedTokenSource(
-				lifetime.ApplicationStopping
-			);
+            using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
+                lifetime.ApplicationStopping
+            );
 
-			// ---------------------------
-			// Accept WebSocket
-			// ---------------------------
-			var socket = await context.WebSockets.AcceptWebSocketAsync();
+            var socket = await context.WebSockets.AcceptWebSocketAsync();
 
-			var connectionId = Guid.NewGuid().ToString();
+            var connectionId = Guid.NewGuid().ToString();
 
-			await connectionManager.Add(connectionId, socket);
+            await connectionManager.Add(connectionId, socket);
+            Console.WriteLine($"WS Connected: {connectionId}");
 
-			Console.WriteLine($"WS CONNECTED: {connectionId}");
+            var buffer = new byte[1024];
 
-			var buffer = new byte[1024];
+            try
+            {
+                while (!cancellationTokenSource.Token.IsCancellationRequested &&
+                       socket.State == WebSocketState.Open)
+                {
+                    var result = await socket.ReceiveAsync(buffer, cancellationTokenSource.Token);
 
-			try
-			{
-				while (!cts.Token.IsCancellationRequested &&
-					   socket.State == WebSocketState.Open)
-				{
-					// Receive message
-					var result = await socket.ReceiveAsync(buffer, cts.Token);
+                    if (result.MessageType == WebSocketMessageType.Close)
+                        break;
 
-					// Handle close frame
-					if (result.MessageType == WebSocketMessageType.Close)
-						break;
+                    var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-					// Decode message
-					var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    Console.WriteLine($"[{connectionId}] {message}");
 
-					Console.WriteLine($"[{connectionId}] {msg}");
+                    await router.Route(connectionId, message);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // triggered by app shutdown
+            }
+            finally
+            {
+                await connectionManager.Remove(connectionId);
 
-					// Route message to handlers
-					await router.Route(connectionId, msg);
-				}
-			}
-			catch (OperationCanceledException)
-			{
-				// triggered by app shutdown
-			}
-			finally
-			{
-				// ---------------------------
-				// Cleanup connection
-				// ---------------------------
-				await connectionManager.Remove(connectionId);
+                if (socket.State == WebSocketState.Open)
+                {
+                    await socket.CloseAsync(
+                        WebSocketCloseStatus.NormalClosure,
+                        "Server shutting down",
+                        CancellationToken.None
+                    );
+                }
 
-				if (socket.State == WebSocketState.Open)
-				{
-					await socket.CloseAsync(
-						WebSocketCloseStatus.NormalClosure,
-						"Server shutting down",
-						CancellationToken.None
-					);
-				}
+                Console.WriteLine($"WS DISCONNECTED: {connectionId}");
+            }
+        });
 
-				Console.WriteLine($"WS DISCONNECTED: {connectionId}");
-			}
-		});
+        app.MapControllers();
 
-		app.MapControllers();
-
-		app.Run();
-	}
+        app.Run();
+    }
 }

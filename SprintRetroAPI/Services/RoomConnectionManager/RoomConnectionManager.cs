@@ -1,18 +1,21 @@
 using System.Collections.Concurrent;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
+using SprintRetroAPI.Services.RoomConnectionManager.Parameters;
 
 namespace SprintRetroAPI.Services.RoomConnectionManager;
 public class RoomConnectionManager : IRoomConnectionManager
 {
 	private readonly ConcurrentDictionary<string, HashSet<string>> _rooms = new();
+	private readonly ConcurrentDictionary<string, string> _participantIdByConnectionId = new();
 
-	public Task AddToRoom(string roomId, string connectionId)
+	public Task AddToRoom(AddToRoomParameters parameters)
 	{
-		var room = _rooms.GetOrAdd(roomId, _ => new HashSet<string>());
+		var room = _rooms.GetOrAdd(parameters.RoomId, _ => new HashSet<string>());
 
 		lock (room)
 		{
-			room.Add(connectionId);
+			_participantIdByConnectionId[parameters.ConnectionId] = parameters.ParticipantId;
+			room.Add(parameters.ConnectionId);
 		}
 
 		return Task.CompletedTask;

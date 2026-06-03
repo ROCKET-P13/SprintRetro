@@ -50,8 +50,7 @@ namespace SprintRetroAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     room_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    connection_id = table.Column<string>(type: "text", nullable: true)
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
