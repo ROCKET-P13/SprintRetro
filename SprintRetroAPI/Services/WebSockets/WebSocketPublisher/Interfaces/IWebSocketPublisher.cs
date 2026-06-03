@@ -1,4 +1,4 @@
-namespace SprintRetroAPI.WebSocketPublisher.Interfaces;
+namespace SprintRetroAPI.Services.WebSockets.WebSocketPublisher.Interfaces;
 
 public interface IWebSocketPublisher
 {

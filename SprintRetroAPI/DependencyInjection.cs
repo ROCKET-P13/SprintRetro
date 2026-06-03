@@ -18,7 +18,8 @@ using SprintRetroAPI.Services.WebSockets;
 using SprintRetroAPI.Services.WebSockets.Handlers;
 using SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager;
 using SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager.Interfaces;
-using SprintRetroAPI.WebSocketPublisher.Interfaces;
+using SprintRetroAPI.Services.WebSockets.WebSocketPublisher;
+using SprintRetroAPI.Services.WebSockets.WebSocketPublisher.Interfaces;
 
 namespace SprintRetroAPI;
 
@@ -50,7 +51,7 @@ public static class DependencyInjection
 
 		// Application services
 		services.AddScoped<IBroadcastService, BroadcastService>();
-		services.AddScoped<IWebSocketPublisher, WebSocketPublisher.WebSocketPublisher>();
+		services.AddScoped<IWebSocketPublisher, WebSocketPublisher>();
 
 		// Handlers
 		services.AddSingleton<JoinRoomHandler>();

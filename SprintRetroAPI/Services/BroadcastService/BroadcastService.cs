@@ -5,7 +5,7 @@ using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
 using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.BroadcastService.Interfaces;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
-using SprintRetroAPI.WebSocketPublisher.Interfaces;
+using SprintRetroAPI.Services.WebSockets.WebSocketPublisher.Interfaces;
 
 namespace SprintRetroAPI.Services.BroadcastService;
 

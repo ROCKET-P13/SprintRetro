@@ -1,9 +1,9 @@
 using System.Text.Json;
 using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager.Interfaces;
-using SprintRetroAPI.WebSocketPublisher.Interfaces;
+using SprintRetroAPI.Services.WebSockets.WebSocketPublisher.Interfaces;
 
-namespace SprintRetroAPI.WebSocketPublisher;
+namespace SprintRetroAPI.Services.WebSockets.WebSocketPublisher;
 
 public class WebSocketPublisher(IWebSocketConnectionManager WebSocketConnectionManager) : IWebSocketPublisher
 {
