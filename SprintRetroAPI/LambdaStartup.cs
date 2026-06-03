@@ -13,7 +13,10 @@ public class LambdaStartup(IConfiguration configuration)
 			throw new Exception("Connection string not found");
 		}
 
-		services.AddApplication(connectionString);
+		services.AddApplication(
+			connectionString
+			?? throw new InvalidOperationException("Missing connection string")
+		);
 	}
 
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
