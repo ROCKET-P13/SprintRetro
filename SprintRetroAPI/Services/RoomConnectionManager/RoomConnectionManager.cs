@@ -5,17 +5,16 @@ using SprintRetroAPI.Services.RoomConnectionManager.Parameters;
 namespace SprintRetroAPI.Services.RoomConnectionManager;
 public class RoomConnectionManager : IRoomConnectionManager
 {
-	private readonly ConcurrentDictionary<string, HashSet<string>> _rooms = new();
+	private readonly ConcurrentDictionary<string, HashSet<string>> _connectionsByRoomId = new();
 	private readonly ConcurrentDictionary<string, string> _participantIdByConnectionId = new();
 
 	public Task AddToRoom(AddToRoomParameters parameters)
 	{
-		var room = _rooms.GetOrAdd(parameters.RoomId, _ => new HashSet<string>());
-
-		lock (room)
+		var roomConnections = _connectionsByRoomId.GetOrAdd(parameters.RoomId, _ => new HashSet<string>());
+		lock (roomConnections)
 		{
 			_participantIdByConnectionId[parameters.ConnectionId] = parameters.ParticipantId;
-			room.Add(parameters.ConnectionId);
+			roomConnections.Add(parameters.ConnectionId);
 		}
 
 		return Task.CompletedTask;
@@ -23,11 +22,11 @@ public class RoomConnectionManager : IRoomConnectionManager
 
 	public Task RemoveFromRoom(string roomId, string connectionId)
 	{
-		if (_rooms.TryGetValue(roomId, out var room))
+		if (_connectionsByRoomId.TryGetValue(roomId, out var roomConnections))
 		{
-			lock (room)
+			lock (roomConnections)
 			{
-				room.Remove(connectionId);
+				roomConnections.Remove(connectionId);
 			}
 		}
 
@@ -36,12 +35,23 @@ public class RoomConnectionManager : IRoomConnectionManager
 
 	public IReadOnlyCollection<string> GetConnections(string roomId)
 	{
-		if (!_rooms.TryGetValue(roomId, out var room))
-			return [];
-
-		lock (room)
+		_connectionsByRoomId.TryGetValue(roomId, out var roomConnections);
+		if (roomConnections is null)
 		{
-			return room.ToList();
+			Console.WriteLine("CONNECTIONS: No Connections Exist");
+			return [];
+		}
+
+			foreach (var test in roomConnections)
+			{
+				Console.WriteLine($"RoomConnectionManager.CONNECTION: {test}");
+			}
+
+		Console.WriteLine($"CONNECTIONS: {roomConnections}");
+
+		lock (roomConnections)
+		{
+			return roomConnections.ToList();
 		}
 	}
 }

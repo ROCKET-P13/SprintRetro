@@ -1,5 +1,6 @@
 using System.Text.Json;
 using SprintRetroAPI.Contracts.ClientMessages;
+using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
 using SprintRetroAPI.Services.RoomConnectionManager.Parameters;
 
@@ -11,7 +12,7 @@ public class JoinRoomHandler(IRoomConnectionManager roomConnectionManager)
 
 	public async Task Handle(string connectionId, JsonElement payload)
 	{
-		var message = payload.Deserialize<JoinRoomMessage>();
+		var message = JsonSerializer.Deserialize<JoinRoomMessage>(payload, AppJsonSerializerOptions.ApplicationDefault);
 
 		if (message is null)
 		{

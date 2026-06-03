@@ -21,19 +21,11 @@ public class BroadcastService(
 
 	public async Task RoomUpdated(Room room)
 	{
-		var payload = JsonSerializer.Serialize(
-			new RoomUpdatedMessage
-			{
-				Room = _roomViewModelFactory.FromRoom(room)
-			},
-			AppJsonSerializerOptions.ApplicationDefault
-		);
+		var payload = new RoomUpdatedMessage{ Room = _roomViewModelFactory.FromRoom(room) };
 
 		var connectionIds = _roomConnectionManager.GetConnections(room.Id.ToString());
 
-		var tasks = connectionIds.Select(id =>
-			_webSocketPublisher.PublishToConnection(id, payload)
-		);
+		var tasks = connectionIds.Select(id => _webSocketPublisher.PublishToConnection(id, payload));
 
 		await Task.WhenAll(tasks);
 	}
