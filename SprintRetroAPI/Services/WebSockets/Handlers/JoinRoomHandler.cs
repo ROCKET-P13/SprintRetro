@@ -3,10 +3,11 @@ using SprintRetroAPI.Contracts.ClientMessages;
 using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
 using SprintRetroAPI.Services.RoomConnectionManager.Parameters;
+using SprintRetroAPI.Services.WebSockets.Handlers.Interfaces;
 
 namespace SprintRetroAPI.Services.WebSockets.Handlers;
 
-public class JoinRoomHandler(IRoomConnectionManager roomConnectionManager)
+public class JoinRoomHandler(IRoomConnectionManager roomConnectionManager) : IHandler
 {
 	private readonly IRoomConnectionManager _roomConnectionManager = roomConnectionManager;
 
