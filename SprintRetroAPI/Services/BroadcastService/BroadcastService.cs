@@ -21,10 +21,13 @@ public class BroadcastService(
 
 	public async Task RoomUpdated(Room room)
 	{
-		var payload = JsonSerializer.Serialize(new RoomUpdatedMessage
-		{
-			Room = _roomViewModelFactory.FromRoom(room)
-		}, AppJsonSerializerOptions.ApplicationDefault);
+		var payload = JsonSerializer.Serialize(
+			new RoomUpdatedMessage
+			{
+				Room = _roomViewModelFactory.FromRoom(room)
+			},
+			AppJsonSerializerOptions.ApplicationDefault
+		);
 
 		var connectionIds = _roomConnectionManager.GetConnections(room.Id.ToString());
 
