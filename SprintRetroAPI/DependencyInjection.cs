@@ -49,11 +49,9 @@ public static class DependencyInjection
 		services.AddSingleton<IRoomConnectionManager, RoomConnectionManager>();
 		services.AddSingleton<WebSocketMessageRouter>();
 
-		// Application services
 		services.AddScoped<IBroadcastService, BroadcastService>();
 		services.AddScoped<IWebSocketPublisher, WebSocketPublisher>();
 
-		// Handlers
 		services.AddSingleton<JoinRoomHandler>();
 		services.AddControllers();
 
