@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
-using SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager.Interfaces;
+using SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager.Interfaces;
 
-namespace SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager;
-public class LocalWebSocketConnectionManager : ILocalWebSocketConnectionManager
+namespace SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager;
+public class WebSocketConnectionManager : IWebSocketConnectionManager
 {
 	private readonly ConcurrentDictionary<string, WebSocket> _connections = new();
 

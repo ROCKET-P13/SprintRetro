@@ -1,6 +1,6 @@
 using System.Net.WebSockets;
 using System.Text;
-using SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager.Interfaces;
+using SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager.Interfaces;
 using SprintRetroAPI.Services.WebSockets;
 using SprintRetroAPI.Services.WebSockets.Handlers;
 
@@ -26,7 +26,7 @@ public static class LocalEntryPoint
         app.Map("/ws", async context =>
         {
             var lifetime = context.RequestServices.GetRequiredService<IHostApplicationLifetime>();
-            var connectionManager = context.RequestServices.GetRequiredService<ILocalWebSocketConnectionManager>();
+            var connectionManager = context.RequestServices.GetRequiredService<IWebSocketConnectionManager>();
 
             using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
                 lifetime.ApplicationStopping

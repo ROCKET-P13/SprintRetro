@@ -1,16 +1,16 @@
 using System.Text.Json;
 using SprintRetroAPI.Serialization;
-using SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager.Interfaces;
+using SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager.Interfaces;
 using SprintRetroAPI.WebSocketPublisher.Interfaces;
 
 namespace SprintRetroAPI.WebSocketPublisher;
 
-public class WebSocketPublisher(ILocalWebSocketConnectionManager localWebSocketConnectionManager) : IWebSocketPublisher
+public class WebSocketPublisher(IWebSocketConnectionManager WebSocketConnectionManager) : IWebSocketPublisher
 {
-	private readonly ILocalWebSocketConnectionManager _localWebSocketConnectionManager = localWebSocketConnectionManager;
+	private readonly IWebSocketConnectionManager _WebSocketConnectionManager = WebSocketConnectionManager;
 
 	public async Task PublishToConnection(string connectionId, object payload)
 	{
-		await _localWebSocketConnectionManager.Send(connectionId, JsonSerializer.Serialize(payload, AppJsonSerializerOptions.ApplicationDefault));
+		await _WebSocketConnectionManager.Send(connectionId, JsonSerializer.Serialize(payload, AppJsonSerializerOptions.ApplicationDefault));
 	}
 }

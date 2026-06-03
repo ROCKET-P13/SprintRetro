@@ -1,8 +1,8 @@
 using System.Net.WebSockets;
 
-namespace SprintRetroAPI.Services.WebSockets.LocalWebSocketConnectionManager.Interfaces;
+namespace SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager.Interfaces;
 
-public interface ILocalWebSocketConnectionManager
+public interface IWebSocketConnectionManager
 {
 	Task Add(string connectionId, WebSocket socket);
 	Task Remove(string connectionId);
