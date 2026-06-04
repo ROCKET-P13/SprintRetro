@@ -1,8 +1,6 @@
-using System.Text.Json;
 using SprintRetroAPI.Contracts.ServerMessages;
 using SprintRetroAPI.Entities;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
-using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.BroadcastService.Interfaces;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
 using SprintRetroAPI.Services.WebSockets.WebSocketPublisher.Interfaces;
@@ -21,7 +19,7 @@ public class BroadcastService(
 
 	public async Task RoomUpdated(Room room)
 	{
-		var payload = new RoomUpdatedMessage{ Room = _roomViewModelFactory.FromRoom(room) };
+		var payload = new RoomUpdatedMessage{ Payload = _roomViewModelFactory.FromRoom(room) };
 
 		var connectionIds = _roomConnectionManager.GetConnections(room.Id.ToString());
 

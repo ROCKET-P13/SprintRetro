@@ -11,6 +11,9 @@ public class WebSocketPublisher(IWebSocketConnectionManager WebSocketConnectionM
 
 	public async Task PublishToConnection(string connectionId, object payload)
 	{
-		await _WebSocketConnectionManager.Send(connectionId, JsonSerializer.Serialize(payload, AppJsonSerializerOptions.ApplicationDefault));
+		await _WebSocketConnectionManager.Send(
+			connectionId,
+			JsonSerializer.Serialize(payload, AppJsonSerializerOptions.ApplicationDefault)
+		);
 	}
 }
