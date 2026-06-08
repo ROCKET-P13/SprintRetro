@@ -44,6 +44,11 @@ public class RoomsController(
 			room.AddColumn(column.Title, column.Position);
 		}
 
+		if (!string.IsNullOrEmpty(request.ParticipantName))
+		{
+			room.AddParticipant(request.ParticipantName);
+		}
+
 		_roomRepository.Upsert(room);
 
 		await _unitOfWork.SaveChanges();

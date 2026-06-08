@@ -12,14 +12,14 @@ public class Room
 	public List<Column> Columns { get; private set; } = [];
 	public List<Participant> Participants { get; private set; } = [];
 
-	public void AddParticipant(CreateParticipantRequest dto)
+	public void AddParticipant(string participantName)
 	{
 		Participants.Add(
 			new Participant
 			{
 				Id = Guid.NewGuid(),
 				RoomId = Id,
-				Name = dto.Name,
+				Name = participantName,
 			}
 		);
 	}
