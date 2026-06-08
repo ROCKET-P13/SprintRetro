@@ -39,6 +39,11 @@ public class RoomsController(
 			}
 		);
 
+		foreach(var column in request.Columns)
+		{
+			room.AddColumn(column.Title, column.Position);
+		}
+
 		_roomRepository.Upsert(room);
 
 		await _unitOfWork.SaveChanges();
