@@ -6,5 +6,6 @@ public class CommentViewModel
 	public required string Body { get; set; }
 	public int VoteCount { get; set; }
 	public Guid CreatedBy { get; set; }
+	public required string CreatedByName { get; set; }
 	public List<VoteViewModel> Votes { get; set; } = [];
 }
