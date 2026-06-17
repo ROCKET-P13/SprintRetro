@@ -34,9 +34,9 @@ public class Comment
 		return vote;
 	}
 
-	public void RemoveVote(VoteCommentRequest dto)
+	public void RemoveVote(Guid voteId)
 	{
-		var vote = Votes.FirstOrDefault(vote => vote.ParticipantId == dto.ParticipantId);
+		var vote = Votes.FirstOrDefault(vote => vote.Id == voteId);
 
 		if (vote is null)
 		{

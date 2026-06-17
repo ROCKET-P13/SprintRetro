@@ -45,8 +45,8 @@ public class VotesController(
 		);
 	}
 
-	[HttpDelete]
-	public async Task<ActionResult> Remove([FromRoute] Guid roomId, [FromBody] VoteCommentRequest request)
+	[HttpDelete("{voteId:guid}")]
+	public async Task<ActionResult> Remove([FromRoute] Guid roomId, Guid voteId)
 	{
 		var room = await _roomRepository.FindById(roomId);
 		if (room is null)
@@ -54,7 +54,7 @@ public class VotesController(
 			return NotFound("Room not found");
 		}
 
-		room.RemoveVote(request);
+		room.RemoveVote(voteId);
 
 		await _unitOfWork.SaveChanges();
 

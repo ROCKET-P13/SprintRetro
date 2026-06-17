@@ -81,16 +81,16 @@ public class Room
 		return comment.AddVote(dto);
 	}
 
-	public void RemoveVote(VoteCommentRequest dto)
+	public void RemoveVote(Guid voteId)
 	{
 		var comment = Columns.SelectMany(column => column.Comments)
-			.FirstOrDefault(comment => comment.Id == dto.CommentId); 
+			.First(comment => comment.Votes.Any(vote => vote.Id == voteId));
 
 		if (comment is null)
 		{
 			return;
 		}
 
-		comment.RemoveVote(dto);
+		comment.RemoveVote(voteId);
 	}
 }
