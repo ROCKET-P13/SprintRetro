@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SprintRetroAPI.Data.UnitOfWork.Interfaces;
-using SprintRetroAPI.DTOs;
+using SprintRetroAPI.DTOs.Request;
 using SprintRetroAPI.Factories.RoomViewModelFactory.DTOs;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;

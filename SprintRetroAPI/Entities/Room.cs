@@ -1,5 +1,6 @@
 
-using SprintRetroAPI.DTOs;
+
+using SprintRetroAPI.DTOs.Request;
 
 namespace SprintRetroAPI.Entities;
 
@@ -56,7 +57,7 @@ public class Room
 		return position;
 	}
 
-	public void AddComment(CreateCommentRequest dto)
+	public Comment AddComment(CreateCommentRequest dto)
 	{
 		var column = Columns.FirstOrDefault(column => column.Id == dto.ColumnId);
 		if (column is null)
@@ -64,10 +65,10 @@ public class Room
 			throw new InvalidOperationException("Column does not exist in room");
 		}
 
-		column.AddComment(dto);
+		return column.AddComment(dto);
 	}
 
-	public void AddVote(VoteCommentRequest dto)
+	public Vote AddVote(VoteCommentRequest dto)
 	{
 		var comment = Columns.SelectMany(column => column.Comments)
 			.FirstOrDefault(comment => comment.Id == dto.CommentId); 
@@ -77,7 +78,7 @@ public class Room
 			throw new InvalidOperationException("Comment does not exist in room");
 		}
 
-		comment.AddVote(dto);
+		return comment.AddVote(dto);
 	}
 
 	public void RemoveVote(VoteCommentRequest dto)

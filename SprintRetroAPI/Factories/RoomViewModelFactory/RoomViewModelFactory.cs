@@ -26,13 +26,11 @@ public class RoomViewModelFactory : IRoomViewModelFactory
 							Id = comment.Id,
 							Body = comment.Body,
 							VoteCount = comment.Votes.Count,
-							CreatedBy = comment.ParticipantId,
-							CreatedByName = room.Participants.First(participant => participant.Id == comment.ParticipantId).Name,
+							CreatedBy = room.Participants.First(participant => participant.Id == comment.ParticipantId).Name,
 							Votes = [
 								.. comment.Votes.Select(vote => new VoteViewModel
 								{
 									Id = vote.Id,
-									ParticipantId = vote.ParticipantId, 
 									ParticipantName = vote.Participant.Name,
 								})
 							]

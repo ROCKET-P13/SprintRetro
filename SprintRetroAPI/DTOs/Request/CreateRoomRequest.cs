@@ -1,4 +1,4 @@
-namespace SprintRetroAPI.DTOs;
+namespace SprintRetroAPI.DTOs.Request;
 
 
 
