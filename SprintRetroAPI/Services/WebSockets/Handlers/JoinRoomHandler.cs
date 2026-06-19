@@ -11,13 +11,13 @@ public class JoinRoomHandler(IRoomConnectionManager roomConnectionManager) : IHa
 {
 	private readonly IRoomConnectionManager _roomConnectionManager = roomConnectionManager;
 
-	public async Task Handle(string connectionId, JsonElement payload)
+	public async Task<object?> Handle(string connectionId, JsonElement payload)
 	{
 		var message = JsonSerializer.Deserialize<JoinRoomMessage>(payload, AppJsonSerializerOptions.ApplicationDefault);
 
 		if (message is null)
 		{
-			return;
+			throw new Exception("Message is empty");
 		}
 
 		await _roomConnectionManager.AddToRoom(
@@ -28,5 +28,7 @@ public class JoinRoomHandler(IRoomConnectionManager roomConnectionManager) : IHa
 				ParticipantId = message.ParticipantId.ToString(),
 			}
 		);
+
+		return null;
 	}
 }

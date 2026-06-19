@@ -5,14 +5,14 @@ namespace SprintRetroAPI.Services.WebSockets;
 
 public class WebSocketMessageRouter
 {
-	private readonly Dictionary<string, Func<string, JsonElement, Task>> _handlers = new();
+	private readonly Dictionary<string, Func<string, JsonElement, Task<object?>>> _handlers = new();
 
-	public void Register(string type, Func<string, JsonElement, Task> handler)
+	public void Register(string type, Func<string, JsonElement, Task<object?>> handler)
 	{
 		_handlers[type] = handler;
 	}
 
-	public async Task Route(string connectionId, string rawMessage)
+	public async Task<object?> Route(string connectionId, string rawMessage)
 	{
 		Console.WriteLine($"RAW MESSAGE: {rawMessage}");
 
@@ -20,14 +20,13 @@ public class WebSocketMessageRouter
 
 		if (envelope is null)
 		{
-			Console.WriteLine("Failed to deserialize message");
-			return;
+
+			throw new Exception("Failed to deserialize message");
 		}
 
 		if (string.IsNullOrWhiteSpace(envelope.Type))
 		{
-			Console.WriteLine("Message type is empty");
-			return;
+			throw new Exception("Message type is empty");
 		}
 
 		Console.WriteLine($"Handler count: {_handlers.Count}");
@@ -35,10 +34,9 @@ public class WebSocketMessageRouter
 		_handlers.TryGetValue(envelope.Type, out var handler);
 		if (handler is null)
 		{
-			Console.WriteLine($"No handler found for '{envelope.Type}'");
-			return;
+			throw new Exception($"No handler found for '{envelope.Type}'");
 		}
 
-		await handler(connectionId, envelope.Payload);
+		return await handler(connectionId, envelope.Payload);
 	}
 }

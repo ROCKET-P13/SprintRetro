@@ -7,11 +7,11 @@ namespace SprintRetroAPI.Services.WebSockets.WebSocketPublisher;
 
 public class WebSocketPublisher(IWebSocketConnectionManager WebSocketConnectionManager) : IWebSocketPublisher
 {
-	private readonly IWebSocketConnectionManager _WebSocketConnectionManager = WebSocketConnectionManager;
+	private readonly IWebSocketConnectionManager _webSocketConnectionManager = WebSocketConnectionManager;
 
 	public async Task PublishToConnection(string connectionId, object payload)
 	{
-		await _WebSocketConnectionManager.Send(
+		await _webSocketConnectionManager.Send(
 			connectionId,
 			JsonSerializer.Serialize(payload, AppJsonSerializerOptions.ApplicationDefault)
 		);

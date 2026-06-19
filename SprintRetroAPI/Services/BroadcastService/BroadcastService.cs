@@ -1,6 +1,9 @@
+using System.Text;
+using System.Text.Json;
 using SprintRetroAPI.Contracts.ServerMessages;
 using SprintRetroAPI.Entities;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
+using SprintRetroAPI.Serialization;
 using SprintRetroAPI.Services.BroadcastService.Interfaces;
 using SprintRetroAPI.Services.RoomConnectionManager.Interfaces;
 using SprintRetroAPI.Services.WebSockets.WebSocketPublisher.Interfaces;
@@ -27,4 +30,13 @@ public class BroadcastService(
 
 		await Task.WhenAll(tasks);
 	}
-}
+
+    public async Task SendToConnectionAsync(
+        string connectionId,
+        object payload
+		)
+		{
+			// var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload, AppJsonSerializerOptions.ApplicationDefault)).AsMemory();
+			await _webSocketPublisher.PublishToConnection(connectionId, payload);
+		}
+	}

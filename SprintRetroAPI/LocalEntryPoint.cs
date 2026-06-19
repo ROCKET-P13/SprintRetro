@@ -3,6 +3,9 @@ using System.Text;
 using SprintRetroAPI.Services.WebSockets.WebSocketConnectionManager.Interfaces;
 using SprintRetroAPI.Services.WebSockets;
 using SprintRetroAPI.Services.WebSockets.Handlers;
+using System.Text.Json;
+using SprintRetroAPI.Serialization;
+using Microsoft.Extensions.ObjectPool;
 
 namespace SprintRetroAPI;
 
@@ -43,8 +46,7 @@ public static class LocalEntryPoint
 
             try
             {
-                while (!cancellationTokenSource.Token.IsCancellationRequested &&
-                       socket.State == WebSocketState.Open)
+                while (!cancellationTokenSource.Token.IsCancellationRequested && socket.State == WebSocketState.Open)
                 {
                     var result = await socket.ReceiveAsync(buffer, cancellationTokenSource.Token);
 
@@ -55,7 +57,36 @@ public static class LocalEntryPoint
 
                     Console.WriteLine($"[{connectionId}] {message}");
 
-                    await router.Route(connectionId, message);
+					var envelope = JsonSerializer.Deserialize<ClientMessageEnvelope>(message, AppJsonSerializerOptions.ApplicationDefault);
+					ServerMessageEnvelope response;
+					try
+					{
+						var routerResponse = await router.Route(connectionId, message);
+						response = new ServerMessageEnvelope
+						{
+							Type = "RESPONSE",
+							RequestId = envelope?.RequestId,
+							Success = true,
+							Payload = routerResponse
+						};
+					} catch (Exception error)
+					{
+						response = new ServerMessageEnvelope
+						{
+							Type = "RESPONSE",
+							RequestId = envelope?.RequestId,
+							Success = false,
+							Error = error.Message
+						};
+					}
+
+					var responsePayload = JsonSerializer.Serialize(response, AppJsonSerializerOptions.ApplicationDefault);
+					await socket.SendAsync(
+						Encoding.UTF8.GetBytes(responsePayload),
+						WebSocketMessageType.Text,
+						true,
+						CancellationToken.None
+					);
                 }
             }
             catch (OperationCanceledException)
