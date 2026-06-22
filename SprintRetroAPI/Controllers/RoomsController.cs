@@ -44,7 +44,7 @@ public class RoomsController(
 			room.AddColumn(column.Title, column.Position);
 		}
 
-		room.AddParticipant(request.ParticipantName, true);
+		room.AddParticipant(request.ParticipantName);
 		
 		_roomRepository.Upsert(room);
 

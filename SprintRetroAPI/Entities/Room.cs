@@ -9,19 +9,25 @@ public class Room
 	public Guid Id { get; set; }
 	public string Name { get; set; } = string.Empty;
 	public DateTimeOffset CreatedAt { get; set; }
+	public Guid CreatedBy { get; set; }
 
 	public List<Column> Columns { get; private set; } = [];
 	public List<Participant> Participants { get; private set; } = [];
 
-	public void AddParticipant(string participantName, bool? isRoomAdmin)
+	public void AddParticipant(string participantName)
 	{
+		var participantId = Guid.NewGuid();
+		if (Participants.Count == 0)
+		{
+			CreatedBy = participantId;
+		}
+
 		Participants.Add(
 			new Participant
 			{
-				Id = Guid.NewGuid(),
+				Id = participantId,
 				RoomId = Id,
 				Name = participantName,
-				IsRoomAdmin = isRoomAdmin ?? false
 			}
 		);
 	}

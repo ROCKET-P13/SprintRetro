@@ -19,6 +19,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			room.Property(room => room.Id).HasColumnName("id");
 			room.Property(room => room.Name).HasColumnName("name");
 			room.Property(room => room.CreatedAt).HasColumnName("created_at");
+			room.Property(room => room.CreatedBy).HasColumnName("created_by");
 
 			room.HasKey(room => room.Id);
 			room.Property(room => room.Id).ValueGeneratedNever();
@@ -38,7 +39,6 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 		{
 			participant.ToTable("Participants");
 			participant.Property(participant => participant.Id).HasColumnName("id");
-			participant.Property(participant => participant.IsRoomAdmin).HasColumnName("is_room_admin");
 			participant.Property(participant => participant.RoomId).HasColumnName("room_id");
 			participant.Property(participant => participant.Name).HasColumnName("name");
 

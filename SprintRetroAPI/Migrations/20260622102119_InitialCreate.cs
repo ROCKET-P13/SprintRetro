@@ -17,7 +17,8 @@ namespace SprintRetroAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    created_by = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,7 +51,6 @@ namespace SprintRetroAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     room_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    is_room_admin = table.Column<bool>(type: "boolean", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>

@@ -12,6 +12,7 @@ public class RoomViewModelFactory : IRoomViewModelFactory
 		{
 			Id = room.Id,
 			Name = room.Name,
+			CreatedBy = room.CreatedBy,
 			Columns = [
 				.. room.Columns
 				.OrderBy(column => column.Position)
@@ -43,7 +44,6 @@ public class RoomViewModelFactory : IRoomViewModelFactory
 				{
 					Id = participant.Id,
 					Name = participant.Name,
-					IsRoomAdmin = participant.IsRoomAdmin,
 				})
 			]
 		};

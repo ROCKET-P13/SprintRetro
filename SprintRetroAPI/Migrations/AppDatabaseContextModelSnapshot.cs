@@ -92,10 +92,6 @@ namespace SprintRetroAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<bool>("IsRoomAdmin")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_room_admin");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -122,6 +118,10 @@ namespace SprintRetroAPI.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
 
                     b.Property<string>("Name")
                         .IsRequired()
