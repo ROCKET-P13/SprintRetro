@@ -4,6 +4,7 @@ public class Participant
 {
 	public Guid Id { get; set; }
 	public Guid RoomId { get; set; }
+	public bool IsRoomAdmin { get; set; } = false;
 	public Room Room { get; set; } = null!;
 	public string Name { get; set; } = string.Empty;
 	public List<Comment> Comments { get; private set; } = [];

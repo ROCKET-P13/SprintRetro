@@ -31,7 +31,7 @@ public class ParticipantsController(
 			return NotFound("Room not found");
 		}
 
-		room.AddParticipant(request.Name);
+		room.AddParticipant(request.Name, false);
 
 		await _unitOfWork.SaveChanges();
 

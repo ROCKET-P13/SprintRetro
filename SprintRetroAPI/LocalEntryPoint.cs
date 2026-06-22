@@ -5,7 +5,6 @@ using SprintRetroAPI.Services.WebSockets;
 using SprintRetroAPI.Services.WebSockets.Handlers;
 using System.Text.Json;
 using SprintRetroAPI.Serialization;
-using Microsoft.Extensions.ObjectPool;
 
 namespace SprintRetroAPI;
 

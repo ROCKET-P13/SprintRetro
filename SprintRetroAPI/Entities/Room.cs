@@ -13,7 +13,7 @@ public class Room
 	public List<Column> Columns { get; private set; } = [];
 	public List<Participant> Participants { get; private set; } = [];
 
-	public void AddParticipant(string participantName)
+	public void AddParticipant(string participantName, bool? isRoomAdmin)
 	{
 		Participants.Add(
 			new Participant
@@ -21,6 +21,7 @@ public class Room
 				Id = Guid.NewGuid(),
 				RoomId = Id,
 				Name = participantName,
+				IsRoomAdmin = isRoomAdmin ?? false
 			}
 		);
 	}

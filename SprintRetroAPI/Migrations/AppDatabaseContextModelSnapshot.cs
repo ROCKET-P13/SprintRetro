@@ -92,6 +92,10 @@ namespace SprintRetroAPI.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<bool>("IsRoomAdmin")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_room_admin");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)

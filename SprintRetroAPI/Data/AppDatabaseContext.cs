@@ -38,6 +38,7 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 		{
 			participant.ToTable("Participants");
 			participant.Property(participant => participant.Id).HasColumnName("id");
+			participant.Property(participant => participant.IsRoomAdmin).HasColumnName("is_room_admin");
 			participant.Property(participant => participant.RoomId).HasColumnName("room_id");
 			participant.Property(participant => participant.Name).HasColumnName("name");
 

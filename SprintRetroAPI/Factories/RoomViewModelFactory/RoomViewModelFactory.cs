@@ -42,7 +42,8 @@ public class RoomViewModelFactory : IRoomViewModelFactory
 				.. room.Participants.Select(participant => new ParticipantViewModel
 				{
 					Id = participant.Id,
-					Name = participant.Name
+					Name = participant.Name,
+					IsRoomAdmin = participant.IsRoomAdmin,
 				})
 			]
 		};
