@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SprintRetroAPI.Data.UnitOfWork.Interfaces;
 using SprintRetroAPI.DTOs.Request;
-using SprintRetroAPI.Factories.RoomViewModelFactory.DTOs;
+using SprintRetroAPI.DTOs.Response;
 using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 using SprintRetroAPI.Services.BroadcastService.Interfaces;
@@ -23,7 +23,7 @@ public class CoulumnsController(
 	private readonly IBroadcastService _broadcastService = broadcastService;
 
 	[HttpPost]
-	public async Task<ActionResult<RoomViewModel>> Create([FromRoute] Guid roomId, [FromBody] CreateColumnRequest request)
+	public async Task<ActionResult<CreateColumnResponse>> Create([FromRoute] Guid roomId, [FromBody] CreateColumnRequest request)
 	{
 		var room = await _roomRepository.FindById(roomId);
 		if (room is null)
@@ -31,12 +31,19 @@ public class CoulumnsController(
 			return NotFound("Room not found");
 		}
 
-		room.AddColumn(request.Title, request.Position);
+		var column = room.AddColumn(request.Title, request.Position);
 
 		await _unitOfWork.SaveChanges();
 
 		await _broadcastService.RoomUpdated(room);
 
-		return Ok(_roomViewModelFactory.FromRoom(room));
+		return Ok(
+			new CreateColumnResponse
+			{
+				Id = column.Id,
+				Title = column.Title,
+				Position = column.Position,
+			}
+		);
 	}
 }

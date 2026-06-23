@@ -32,7 +32,7 @@ public class Room
 		);
 	}
 
-	public void AddColumn(string title, int? position = null)
+	public Column AddColumn(string title, int? position = null)
 	{
 		var columnPosition = position ?? GetNextAvailableColumnPosition();
 
@@ -41,15 +41,17 @@ public class Room
 			throw new InvalidOperationException("A column already exists at provided position");
 		}
 
-		Columns.Add(
-			new Column
-			{
-				Id = Guid.NewGuid(),
-				RoomId = Id,
-				Title = title,
-				Position = columnPosition,
-			}
-		);
+		var column = new Column
+		{
+			Id = Guid.NewGuid(),
+			RoomId = Id,
+			Title = title,
+			Position = columnPosition,
+		};
+
+		Columns.Add(column);
+
+		return column;
 	}
 
 	private int GetNextAvailableColumnPosition()
