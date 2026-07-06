@@ -25,4 +25,9 @@ public class Column
 		Comments.Add(comment);
 		return comment;
 	}
+
+	public void UpdatePosition(int position)
+	{
+		Position = position;
+	}
 }

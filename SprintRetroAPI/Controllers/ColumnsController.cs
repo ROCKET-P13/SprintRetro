@@ -46,4 +46,35 @@ public class CoulumnsController(
 			}
 		);
 	}
+
+	[HttpPatch]
+	public async Task<ActionResult<UpdateColumnsResponse>> Update([FromRoute] Guid roomId, [FromBody] UpdateColumnsRequest request)
+	{
+		var room = await _roomRepository.FindById(roomId);
+
+		if (room is null)
+		{
+			return NotFound("Room not found");
+		}
+
+		room.UpdateColumns(request.Columns);
+
+		await _unitOfWork.SaveChanges();
+
+		await _broadcastService.RoomUpdated(room);
+
+
+		return new UpdateColumnsResponse
+		{
+			Columns = [
+			.. room.Columns.OrderBy(c => c.Position).Select(column =>
+				new UpdateColumnsResponseColumn
+				{
+					Id = column.Id,
+					Title = column.Title,
+					Position = column.Position
+				})
+			]
+		};
+	}
 }
