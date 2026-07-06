@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using SprintRetroAPI.Data.UnitOfWork.Interfaces;
 using SprintRetroAPI.DTOs.Request;
 using SprintRetroAPI.DTOs.Response;
-using SprintRetroAPI.Factories.RoomViewModelFactory.Interfaces;
 using SprintRetroAPI.Repositories.RoomRepository.Interfaces;
 using SprintRetroAPI.Services.BroadcastService.Interfaces;
 
@@ -13,13 +12,11 @@ namespace SprintRetroAPI.Controllers;
 public class CoulumnsController(
 	IUnitOfWork unitOfWork,
 	IRoomRepository roomRepository,
-	IRoomViewModelFactory roomViewModelFactory,
 	IBroadcastService broadcastService
 ) : ControllerBase
 {
 	private readonly IUnitOfWork _unitOfWork = unitOfWork;
 	private readonly IRoomRepository _roomRepository = roomRepository;
-	private readonly IRoomViewModelFactory _roomViewModelFactory = roomViewModelFactory;
 	private readonly IBroadcastService _broadcastService = broadcastService;
 
 	[HttpPost]
