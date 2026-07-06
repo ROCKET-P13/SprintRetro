@@ -63,17 +63,23 @@ public class CoulumnsController(
 
 		await _broadcastService.RoomUpdated(room);
 
+		var updtedColumnIds = request.Columns
+			.Select(c => c.Id)
+			.ToHashSet();
 
 		return new UpdateColumnsResponse
 		{
 			Columns = [
-			.. room.Columns.OrderBy(c => c.Position).Select(column =>
-				new UpdateColumnsResponseColumn
-				{
-					Id = column.Id,
-					Title = column.Title,
-					Position = column.Position
-				})
+			..room.Columns
+				.Where(column => updtedColumnIds.Contains(column.Id))
+				.OrderBy(column => column.Position)
+				.Select(column =>
+					new UpdateColumnsResponseColumn
+					{
+						Id = column.Id,
+						Title = column.Title,
+						Position = column.Position
+					})
 			]
 		};
 	}
