@@ -1,5 +1,6 @@
 
 
+using Microsoft.Extensions.ObjectPool;
 using SprintRetroAPI.DTOs.Request;
 
 namespace SprintRetroAPI.Entities;
@@ -118,5 +119,22 @@ public class Room
 				roomColumn.UpdatePosition(column.Position);
 			}
 		}
+	}
+
+	public void RemoveColumn(Guid columnId)
+	{
+		var column = Columns.FirstOrDefault(column => column.Id == columnId);
+		if (column is null)
+		{
+			throw new InvalidOperationException("Column does not exist in room");
+		}
+
+		Columns.Remove(column);
+
+		for (var i = 0; i < Columns.Count; i++)
+		{
+			Columns[i].UpdatePosition(i + 1);
+		}
+
 	}
 }

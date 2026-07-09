@@ -80,4 +80,23 @@ public class CoulumnsController(
 			]
 		};
 	}
+
+	[HttpDelete("{columnId:guid}")]
+	public async Task<ActionResult> Delete([FromRoute] Guid roomId, Guid columnId)
+	{
+		var room = await _roomRepository.FindById(roomId);
+
+		if (room is null)
+		{
+			return NotFound("Room not found");
+		}
+
+		room.RemoveColumn(columnId);
+
+		await _unitOfWork.SaveChanges();
+
+		await _broadcastService.RoomUpdated(room);
+
+		return Ok();
+	}
 }
