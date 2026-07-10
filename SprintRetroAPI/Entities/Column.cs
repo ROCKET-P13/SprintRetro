@@ -30,4 +30,9 @@ public class Column
 	{
 		Position = position;
 	}
+
+	public void UpdateTitle(string title)
+	{
+		Title = title;
+	}
 }

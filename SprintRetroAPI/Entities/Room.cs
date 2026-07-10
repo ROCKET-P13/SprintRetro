@@ -104,7 +104,7 @@ public class Room
 		comment.RemoveVote(voteId);
 	}
 
-	public void UpdateColumns(List<UpdateColumnsRequestColumn> columns)
+	public void UpdateColumns(List<UpdateColumnPositionsRequestColumn> columns)
 	{
 		foreach(var column in columns)
 		{
@@ -136,5 +136,16 @@ public class Room
 			Columns[i].UpdatePosition(i + 1);
 		}
 
+	}
+
+	public void UpdateColumnTitle(Guid columnId, string title)
+	{
+		var column = Columns.FirstOrDefault(column => column.Id == columnId);
+		if (column is null)
+		{
+			throw new InvalidOperationException("Column does not exist in room");
+		}
+
+		column.UpdateTitle(title);
 	}
 }

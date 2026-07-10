@@ -45,7 +45,7 @@ public class CoulumnsController(
 	}
 
 	[HttpPatch]
-	public async Task<ActionResult<UpdateColumnsResponse>> Update([FromRoute] Guid roomId, [FromBody] UpdateColumnsRequest request)
+	public async Task<ActionResult<UpdateColumnPositionsResponse>> UpdatePosition([FromRoute] Guid roomId, [FromBody] UpdateColumnPositionsRequest request)
 	{
 		var room = await _roomRepository.FindById(roomId);
 
@@ -60,25 +60,51 @@ public class CoulumnsController(
 
 		await _broadcastService.RoomUpdated(room);
 
-		var updtedColumnIds = request.Columns
+		var updatedColumnIds = request.Columns
 			.Select(c => c.Id)
 			.ToHashSet();
 
-		return new UpdateColumnsResponse
+		return Ok(
+			new UpdateColumnPositionsResponse
+			{
+				Columns = [
+				..room.Columns
+					.Where(column => updatedColumnIds.Contains(column.Id))
+					.OrderBy(column => column.Position)
+					.Select(column =>
+						new UpdateColumnPositionsResponseColumn
+						{
+							Id = column.Id,
+							Title = column.Title,
+							Position = column.Position
+						})
+				]
+			}
+		);
+	}
+
+	[HttpPatch("{columnId:guid}")]
+	public async Task<ActionResult> UpdateTitle([FromRoute] Guid roomId, Guid columnId, [FromBody] UpdateColumnTitleRequest request)
+	{
+		var room = await _roomRepository.FindById(roomId);
+
+		if (room is null)
 		{
-			Columns = [
-			..room.Columns
-				.Where(column => updtedColumnIds.Contains(column.Id))
-				.OrderBy(column => column.Position)
-				.Select(column =>
-					new UpdateColumnsResponseColumn
-					{
-						Id = column.Id,
-						Title = column.Title,
-						Position = column.Position
-					})
-			]
-		};
+			return NotFound("Room not found");
+		}
+
+		room.UpdateColumnTitle(columnId, request.Title);
+
+		await _unitOfWork.SaveChanges();
+		await _broadcastService.RoomUpdated(room);
+
+		return Ok(
+			new UpdateColumnTitleResponse
+			{
+				Id = columnId,
+				Title = request.Title
+			}
+		);
 	}
 
 	[HttpDelete("{columnId:guid}")]
