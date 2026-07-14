@@ -73,7 +73,8 @@ namespace SprintRetroAPI.Migrations
                     column_id = table.Column<Guid>(type: "uuid", nullable: false),
                     participant_id = table.Column<Guid>(type: "uuid", nullable: false),
                     body = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    parent_comment_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -84,6 +85,12 @@ namespace SprintRetroAPI.Migrations
                         principalTable: "Columns",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Comments_parent_comment_id",
+                        column: x => x.parent_comment_id,
+                        principalTable: "Comments",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comments_Participants_participant_id",
                         column: x => x.participant_id,
@@ -133,6 +140,11 @@ namespace SprintRetroAPI.Migrations
                 name: "IX_Comments_column_id",
                 table: "Comments",
                 column: "column_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_parent_comment_id",
+                table: "Comments",
+                column: "parent_comment_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_participant_id",

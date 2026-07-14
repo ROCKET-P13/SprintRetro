@@ -1,11 +1,8 @@
 namespace SprintRetroAPI.Factories.RoomViewModelFactory.DTOs;
 
-public class CommentViewModel
+public class ChildCommentViewModel
 {
 	public required Guid Id { get; set; }
 	public required string Body { get; set; }
-	public int VoteCount { get; set; }
 	public required string CreatedBy { get; set; }
-	public List<VoteViewModel> Votes { get; set; } = [];
-	public List<CommentViewModel> ChildComments { get; set; } = [];
 }

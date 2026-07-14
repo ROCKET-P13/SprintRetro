@@ -45,12 +45,12 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			participant.HasMany(participant => participant.Comments)
 				.WithOne(comment => comment.Participant)
 				.HasForeignKey(comment => comment.ParticipantId);
-		
+
 			participant.HasKey(participant => participant.Id);
 			participant.Property(participant => participant.Id).ValueGeneratedNever();
 			participant.Property(participant => participant.Name).HasMaxLength(100).IsRequired();
 		});
-		
+
 		modelBuilder.Entity<Column>(column =>
 		{
 			column.ToTable("Columns");
@@ -77,11 +77,17 @@ public class AppDatabaseContext(DbContextOptions<AppDatabaseContext> options) : 
 			comment.Property(comment => comment.ColumnId).HasColumnName("column_id");
 			comment.Property(comment => comment.ParticipantId).HasColumnName("participant_id");
 			comment.Property(comment => comment.Body).HasColumnName("body");
+			comment.Property(comment => comment.ParentCommentId).HasColumnName("parent_comment_id");
 			comment.Property(comment => comment.CreatedAt).HasColumnName("created_at");
 
 			comment.HasMany(comment => comment.Votes)
 				.WithOne(vote => vote.Comment)
 				.HasForeignKey(vote => vote.CommentId);
+
+			comment.HasOne(c => c.ParentComment)
+				.WithMany(c => c.ChildComments)
+				.HasForeignKey(c => c.ParentCommentId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 			comment.HasKey(comment => comment.Id);
 			comment.Property(comment => comment.Id).ValueGeneratedNever();

@@ -1,6 +1,5 @@
 
 
-using Microsoft.Extensions.ObjectPool;
 using SprintRetroAPI.DTOs.Request;
 
 namespace SprintRetroAPI.Entities;
@@ -147,5 +146,30 @@ public class Room
 		}
 
 		column.UpdateTitle(title);
+	}
+
+	public Comment MergeComments(Guid parentCommentId, Guid childCommentId)
+	{
+		var commentsById = Columns
+			.SelectMany(column => column.Comments)
+			.Where(comment => comment.Id == childCommentId || comment.Id == parentCommentId)
+			.ToDictionary(comment => comment.Id);
+
+		var parentComment = commentsById[parentCommentId];
+		var childComment = commentsById[childCommentId];
+
+		if (parentComment is null)
+		{
+			throw new InvalidOperationException("Parent comment does not exist in room");
+		}
+
+		if (childComment is null)
+		{
+			throw new InvalidOperationException("Child comment does not exist in room");
+		}
+
+		parentComment.AddChild(childComment);
+
+		return parentComment;
 	}
 }

@@ -67,6 +67,10 @@ namespace SprintRetroAPI.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<Guid?>("ParentCommentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_comment_id");
+
                     b.Property<Guid>("ParticipantId")
                         .HasColumnType("uuid")
                         .HasColumnName("participant_id");
@@ -78,6 +82,8 @@ namespace SprintRetroAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ColumnId");
+
+                    b.HasIndex("ParentCommentId");
 
                     b.HasIndex("ParticipantId");
 
@@ -179,6 +185,11 @@ namespace SprintRetroAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SprintRetroAPI.Entities.Comment", "ParentComment")
+                        .WithMany("ChildComments")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("SprintRetroAPI.Entities.Participant", "Participant")
                         .WithMany("Comments")
                         .HasForeignKey("ParticipantId")
@@ -192,6 +203,8 @@ namespace SprintRetroAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Column");
+
+                    b.Navigation("ParentComment");
 
                     b.Navigation("Participant");
 
@@ -235,6 +248,8 @@ namespace SprintRetroAPI.Migrations
 
             modelBuilder.Entity("SprintRetroAPI.Entities.Comment", b =>
                 {
+                    b.Navigation("ChildComments");
+
                     b.Navigation("Votes");
                 });
 

@@ -46,4 +46,22 @@ public class CommentsController(
 			}
 		);
 	}
+
+	[HttpPost("{commentId:guid}/merge")]
+	public async Task<ActionResult<Comment>> Merge([FromRoute] Guid roomId, Guid commentId, [FromBody] MergeCommentsRequest request)
+	{
+		
+		var room = await _roomRepository.FindById(roomId);
+		if (room is null)
+		{
+			return NotFound("Room not found");
+		}
+
+		var mergedComment = room.MergeComments(commentId, request.CommentId);
+
+		await _unitOfWork.SaveChanges();
+		await _broadcastService.RoomUpdated(room);
+
+		return Ok(mergedComment);
+	}
 }
