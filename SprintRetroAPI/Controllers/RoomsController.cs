@@ -32,20 +32,15 @@ public class RoomsController(
 	[HttpPost]
 	public async Task<ActionResult<RoomViewModel>> Create([FromBody] CreateRoomRequest request)
 	{
-		var room = _roomFactory.FromDTO(
-			new RoomFactoryDTO
-			{
-				Name = request.Name
-			}
-		);
+		var room = _roomFactory.FromDTO(new RoomFactoryDTO { Name = request.Name });
 
-		foreach(var column in request.Columns)
+		foreach (var column in request.Columns)
 		{
 			room.AddColumn(column.Title, column.Position);
 		}
 
 		room.AddParticipant(request.ParticipantName);
-		
+
 		_roomRepository.Upsert(room);
 
 		await _unitOfWork.SaveChanges();
